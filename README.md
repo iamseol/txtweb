@@ -2,12 +2,14 @@
 
 Txtweb is a content-driven static HTML generator.
 
+- GitHub: https://github.com/iamseol/txtweb
+- Crates.io: https://crates.io/crates/txtweb
+
 ### Install
 
-You can install it via `cargo` or `homebrew`
+You can install it via `cargo`
 
 - Cargo: `cargo install txtweb`
-- Homebrew: `brew install txtweb`
 
 ### Usage
 
