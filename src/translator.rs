@@ -101,10 +101,14 @@ pub fn translate(buf: &mut String, from: &str, components: &Vec<(String, String)
                         b.trim()
                             .split('|')
                             .map(|c| {
-                                c.trim()
-                                    .split_once(' ')
-                                    .map(|(a, b)| (a.trim(), b.trim()))
-                                    .unwrap_or_else(|| (c.trim(), ""))
+                                if a.starts_with('_') {
+                                    (c.trim(), "")
+                                } else {
+                                    c.trim()
+                                        .split_once(' ')
+                                        .map(|(a, b)| (a.trim(), b.trim()))
+                                        .unwrap_or_else(|| (c.trim(), ""))
+                                }
                             })
                             .collect(),
                     )
