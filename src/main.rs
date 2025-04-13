@@ -18,7 +18,8 @@ fn new(project_name: &str) {
     fs::create_dir(&root_dir.join("components")).unwrap();
     fs::create_dir(&root_dir.join("contents")).unwrap();
     fs::create_dir(&root_dir.join("public")).unwrap();
-    fs::create_dir(&root_dir.join("styles")).unwrap();
+    fs::create_dir(&root_dir.join("css")).unwrap();
+    fs::create_dir(&root_dir.join("js")).unwrap();
 
     let mut base_file = fs::File::create_new(&root_dir.join("contents").join("base.txt")).unwrap();
     base_file.write_all(format!("html lang en >\n  head >\n    title > {project_name} <\n  <\n  body >\n    main > h1 > under constructoin... < <\n  <\n<").as_bytes()).unwrap();
@@ -33,10 +34,11 @@ fn build() {
 
     copy_dir_all(&root_dir.join("contents"), &root_dir.join("dist"));
     setup_components(&root_dir, &mut components);
-    translate_page(&root_dir.join("dist"), &components, None);
+    translate_page(&root_dir.join("dist"), &components);
 
     copy_dir_all(&root_dir.join("public"), &root_dir.join("dist/public"));
-    copy_dir_all(&root_dir.join("styles"), &root_dir.join("dist/styles"));
+    copy_dir_all(&root_dir.join("css"), &root_dir.join("dist/css"));
+    copy_dir_all(&root_dir.join("js"), &root_dir.join("dist/js"));
 }
 
 fn help() {

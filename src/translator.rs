@@ -5,28 +5,16 @@ use std::{
     path::PathBuf,
 };
 
-pub fn translate_page(
-    folder_path: &PathBuf,
-    components: &Vec<(String, String)>,
-    previous_base: Option<&str>,
-) {
-    let mut final_base: String = String::new();
-
-    if folder_path.join("base.txt").try_exists().unwrap() {
-        translate_file(&mut final_base, &folder_path.join("base.txt"), components);
-        fs::remove_file(folder_path.join("base.txt")).unwrap();
-    } else {
-        final_base = previous_base.unwrap().to_string();
-    }
-
-    let mut content: String = final_base.clone();
+pub fn translate_page(folder_path: &PathBuf, components: &Vec<(String, String)>) {
+    let mut to: String = String::from("<!DOCTYPE html>");
+    translate_file(&mut to, &folder_path.join("index.txt"), components);
 
     let entries = folder_path.read_dir().unwrap();
     for current_entry in entries {
         let current_entry = current_entry.unwrap();
 
         if current_entry.path().is_dir() {
-            translate_page(&current_entry.path(), components, Some(&final_base));
+            translate_page(&current_entry.path(), components);
             continue;
         }
 
@@ -45,7 +33,7 @@ pub fn translate_page(
             components,
         );
 
-        content = content.replace(
+        to = to.replace(
             &format!("<#{current_entry_name} />"),
             &current_entry_content,
         );
@@ -65,8 +53,7 @@ pub fn translate_page(
     })
     .unwrap();
 
-    new_html.write_all(b"<!DOCTYPE html>").unwrap();
-    new_html.write_all(content.as_bytes()).unwrap();
+    new_html.write_all(to.as_bytes()).unwrap();
 }
 
 pub fn translate_file(buf: &mut String, file_path: &PathBuf, components: &Vec<(String, String)>) {

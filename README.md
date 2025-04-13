@@ -29,7 +29,7 @@ You can install it via `cargo`
 
   ##### Structure
 
-  The root directory(`/contents`, not `/`), should have the `base.txt` file. The base file is the file that all contents are based on. You can add any contents there like adding tags, but you should also put `#{name}` to include dynamic contents for different routes. The `#{name}` would point to the file that has the same name and exists in the same directory. The base file would be applied to its children routes too so you do not have to add duplicated contents below it. However, if you add `base.txt` somewhere in the children's directories, it will ignore the base file from the parent but start its own base file and pass it down to its children.
+  The root directory(`/contents`, not `/`), should have the `index.txt` file. You can add any contents there like adding tags, but you should also put `#{name}` to include dynamic contents for different routes. The `#{name}` would point to the file that has the same name and exists in the same directory.
 
 - `/components`
 
@@ -39,9 +39,13 @@ You can install it via `cargo`
 
   You can store images, videos, or any files here to access from `/public/**`.
 
-- `/styles`
+- `/css`
 
-  You can store `.css` files here to access from `/styles/**`.
+  You can store `.css` files here to access from `/css/**`.
+
+- `/js`
+
+  You can store `.js` files here to access from `/js/**`.
 
 - `/dist`
 

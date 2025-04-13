@@ -1,6 +1,6 @@
 [package]
 name = "txtweb"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Seol SO <hi@iamseol.com>"]
 description = "txtweb is a content-driven static HTML generator."
@@ -8,8 +8,6 @@ license = "MIT"
 repository = "https://github.com/iamseol/txtweb"
 documentation = "https://github.com/iamseol/txtweb"
 homepage = "https://github.com/iamseol/txtweb"
-keywords = ["cli", "HTML", "web", "static"]
+keywords = ["cli", "web", "generator"]
 categories = ["web-programming", "command-line-utilities"]
 readme = "README.md"
-
-[dependencies]
