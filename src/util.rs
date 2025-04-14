@@ -1,6 +1,6 @@
-use std::{fs, path::PathBuf};
+use std::{fs, io::Write, path::PathBuf};
 
-pub fn copy_dir_all(src: &PathBuf, des: &PathBuf) {
+pub fn copy_dir_all(src: PathBuf, des: PathBuf) {
     fs::create_dir_all(&des).unwrap();
 
     for entry in fs::read_dir(src).unwrap() {
@@ -8,7 +8,7 @@ pub fn copy_dir_all(src: &PathBuf, des: &PathBuf) {
         let entry_type = entry.file_type().unwrap();
 
         if entry_type.is_dir() {
-            copy_dir_all(&entry.path(), &des.join(entry.file_name()));
+            copy_dir_all(entry.path(), des.join(entry.file_name()));
         } else {
             fs::copy(entry.path(), des.join(entry.file_name())).unwrap();
         }

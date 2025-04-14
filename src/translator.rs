@@ -5,7 +5,7 @@ use std::{
     path::PathBuf,
 };
 
-pub fn translate_page(folder_path: &PathBuf, components: &Vec<(String, String)>) {
+pub fn translate_page(folder_path: PathBuf, components: &Vec<(String, String)>) {
     let mut to: String = String::from("<!DOCTYPE html>");
     translate_file(&mut to, &folder_path.join("index.txt"), components);
 
@@ -14,7 +14,7 @@ pub fn translate_page(folder_path: &PathBuf, components: &Vec<(String, String)>)
         let current_entry = current_entry.unwrap();
 
         if current_entry.path().is_dir() {
-            translate_page(&current_entry.path(), components);
+            translate_page(current_entry.path(), components);
             continue;
         }
 
@@ -64,10 +64,10 @@ pub fn translate_file(buf: &mut String, file_path: &PathBuf, components: &Vec<(S
         .read_to_string(&mut raw)
         .unwrap();
 
-    translate(buf, &raw, &components);
+    translate(buf, &raw, components);
 }
 
-pub fn translate(buf: &mut String, from: &str, components: &Vec<(String, String)>) {
+fn translate(buf: &mut String, from: &str, components: &Vec<(String, String)>) {
     let from = from.replace("\n", " ").replace("\t", " ");
 
     if !from.contains('>') {
@@ -79,28 +79,7 @@ pub fn translate(buf: &mut String, from: &str, components: &Vec<(String, String)
 
     from.chars().for_each(|current_char| match current_char {
         '>' => {
-            let (tag, attr) = storage
-                .trim()
-                .split_once(' ')
-                .map(|(a, b)| {
-                    (
-                        a.trim(),
-                        b.trim()
-                            .split('|')
-                            .map(|c| {
-                                if a.starts_with('_') {
-                                    (c.trim(), "")
-                                } else {
-                                    c.trim()
-                                        .split_once(' ')
-                                        .map(|(a, b)| (a.trim(), b.trim()))
-                                        .unwrap_or_else(|| (c.trim(), ""))
-                                }
-                            })
-                            .collect(),
-                    )
-                })
-                .unwrap_or_else(|| (storage.trim(), Vec::with_capacity(0)));
+            let (tag, attr) = parse_storage(&storage);
 
             if tag.starts_with('_') {
                 let mut current_component =
@@ -148,4 +127,30 @@ pub fn translate(buf: &mut String, from: &str, components: &Vec<(String, String)
         }
         _ => storage.push(current_char),
     });
+}
+
+fn parse_storage(storage: &str) -> (&str, Vec<(&str, &str)>) {
+    storage
+        .trim()
+        .split_once(' ')
+        .map(|(tag, attr)| {
+            let attrs = attr
+                .trim()
+                .split('|')
+                .map(|entry| {
+                    let entry = entry.trim();
+                    if tag.starts_with('_') {
+                        (entry, "")
+                    } else {
+                        entry
+                            .split_once(' ')
+                            .map(|(key, value)| (key.trim(), value.trim()))
+                            .unwrap_or((entry, ""))
+                    }
+                })
+                .collect();
+
+            (tag.trim(), attrs)
+        })
+        .unwrap_or_else(|| (storage.trim(), Vec::with_capacity(0)))
 }
