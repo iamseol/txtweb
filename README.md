@@ -49,13 +49,13 @@ You can install it via `cargo`
 
   You can store images, videos, or any files here to access from `/public/**`.
 
-- `/css`
+- `/public/css`
 
-  You can store `.css` files here to access from `/css/**`.
+  You can store `.css` files here to access from `/public/css/**`.
 
-- `/js`
+- `/public/js`
 
-  You can store `.js` files here to access from `/js/**`.
+  You can store `.js` files here to access from `/public/js/**`.
 
 - `/dist`
 
