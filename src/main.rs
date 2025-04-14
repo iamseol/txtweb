@@ -17,8 +17,11 @@ fn main() {
     }
 }
 
-fn new(project_name: &str) {
-    let root_dir: PathBuf = env::current_dir().unwrap().join(project_name);
+fn new() {
+    let mut project_name: String = String::new();
+    get_user_input(&mut project_name, "project name > ");
+
+    let root_dir: PathBuf = env::current_dir().unwrap().join(&project_name);
 
     fs::create_dir(&root_dir).unwrap();
     fs::create_dir(root_dir.join("components")).unwrap();

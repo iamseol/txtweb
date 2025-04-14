@@ -18,3 +18,10 @@ pub fn copy_dir_all(src: &PathBuf, des: &PathBuf) {
 pub fn is_status_code(name: &str) -> bool {
     name.chars().all(|c| c.is_numeric())
 }
+
+pub fn get_user_input(buf: &mut String, greeting: &str) {
+    print!("{greeting}");
+    std::io::stdout().flush().unwrap();
+    std::io::stdin().read_line(buf).unwrap();
+    *buf = buf.trim().to_string();
+}
