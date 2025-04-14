@@ -1,9 +1,19 @@
-# Txtweb
+# txtweb
 
-Txtweb is a content-driven static HTML generator.
+txtweb is the text file-based webpage generator.
+
+### Links
 
 - GitHub: https://github.com/iamseol/txtweb
 - Crates.io: https://crates.io/crates/txtweb
+
+### Example
+
+Here are some examples.
+
+- My Homepage
+  - GitHub: https://github.com/iamseol/homepage
+  - Website: https://iamseol.com
 
 ### Install
 
@@ -102,11 +112,3 @@ The grammar for components is very similar to the one for basic, except that you
 #### Indentation
 
 The indentation does not matter at all. It does not matter where you add spaces or new lines.
-
-### Example
-
-Here are some examples.
-
-- My Homepage
-  - GitHub: https://github.com/iamseol/homepage
-  - Website: https://iamseol.com
