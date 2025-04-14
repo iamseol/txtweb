@@ -4,10 +4,16 @@ use txtweb::{components::setup_components, translator::translate_page, util::cop
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
 
-    match args.first().unwrap().as_ref() {
-        "new" => new(&args.get(1).unwrap().as_ref()),
-        "build" => build(),
-        _ => help(),
+    let first = args.first();
+
+    if let Some(first) = first {
+        match first.as_ref() {
+            "new" => new(),
+            "build" => build(),
+            _ => help(),
+        }
+    } else {
+        help();
     }
 }
 
