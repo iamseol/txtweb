@@ -23,9 +23,8 @@ You can install it via `cargo`
 
 ### Usage
 
-`txtweb new {name}`: for initialization
-
-`txtweb build`: for building
+- `txtweb new`: for initialization
+- `txtweb build`: for building
 
 ### Content Structure
 
