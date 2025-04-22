@@ -1,13 +1,13 @@
 [package]
 name = "txtweb"
+description = "txtweb is a text file-based webpage generator."
 version = "0.1.3"
-edition = "2021"
+edition = "2024"
 authors = ["Seol SO <hi@iamseol.com>"]
-description = "txtweb is the text file-based webpage generator."
 license = "MIT"
 repository = "https://github.com/iamseol/txtweb"
-documentation = "https://github.com/iamseol/txtweb"
+documentation = "https://docs.rs/txtweb/latest/txtweb"
 homepage = "https://github.com/iamseol/txtweb"
-keywords = ["cli", "txt", "web", "generator"]
-categories = ["web-programming", "command-line-utilities"]
+keywords = ["cli", "txt", "web"]
+categories = ["command-line-utilities", "web-programming"]
 readme = "README.md"
