@@ -1,3 +1,7 @@
-pub mod components;
-pub mod translator;
-pub mod util;
+mod components;
+mod translator;
+mod util;
+
+pub use components::setup_components;
+pub use translator::translate_page;
+pub use util::{copy_dir_all, get_user_input, is_status_code};

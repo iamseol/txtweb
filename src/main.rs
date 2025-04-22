@@ -1,9 +1,5 @@
 use std::{env, fs, io::Write, path::PathBuf};
-use txtweb::{
-    components::setup_components,
-    translator::translate_page,
-    util::{copy_dir_all, get_user_input},
-};
+use txtweb::{copy_dir_all, get_user_input, setup_components, translate_page};
 
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
