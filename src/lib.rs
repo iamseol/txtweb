@@ -4,4 +4,4 @@ mod util;
 
 pub use components::setup_components;
 pub use translator::translate_page;
-pub use util::{copy_dir_all, get_user_input, is_status_code};
+pub use util::get_user_input;

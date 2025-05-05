@@ -1,11 +1,10 @@
-use crate::util::is_status_code;
 use std::{
     fs::{self, File},
     io::{Read, Write},
     path::PathBuf,
 };
 
-pub fn translate_page(folder_path: PathBuf, components: &Vec<(String, String)>) {
+pub fn translate_page(folder_path: &PathBuf, components: &Vec<(String, String)>) {
     let mut to: String = String::from("<!DOCTYPE html>");
     translate_file(&mut to, &folder_path.join("index.txt"), components);
 
@@ -14,7 +13,7 @@ pub fn translate_page(folder_path: PathBuf, components: &Vec<(String, String)>) 
         let current_entry = current_entry.unwrap();
 
         if current_entry.path().is_dir() {
-            translate_page(current_entry.path(), components);
+            translate_page(&current_entry.path(), components);
             continue;
         }
 
@@ -42,7 +41,7 @@ pub fn translate_page(folder_path: PathBuf, components: &Vec<(String, String)>) 
     }
 
     let folder_name = folder_path.file_name().unwrap().to_str().unwrap();
-    let mut new_html = File::create_new(if is_status_code(folder_name) {
+    let mut new_html = File::create_new(if folder_name.chars().all(|c| c.is_numeric()) {
         fs::remove_dir_all(&folder_path).unwrap();
         folder_path
             .parent()

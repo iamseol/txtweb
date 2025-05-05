@@ -3,5 +3,14 @@
 version = 4
 
 [[package]]
+name = "txtlib"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9db577ccc8ff67eccde311925997ed08edff3c7656d15f149e918776aaa149df"
+
+[[package]]
 name = "txtweb"
 version = "0.1.3"
+dependencies = [
+ "txtlib",
+]

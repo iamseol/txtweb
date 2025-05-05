@@ -11,3 +11,6 @@ homepage = "https://github.com/iamseol/txtweb"
 keywords = ["cli", "txt", "web"]
 categories = ["command-line-utilities", "web-programming"]
 readme = "README.md"
+
+[dependencies]
+txtlib = "0.1.1"
