@@ -1,0 +1,16 @@
+[package]
+name = "txtweb"
+description = "text file-based webpage generating tool"
+version = "0.2.0"
+edition = "2024"
+authors = ["Seol SO <hi@iamseol.com>"]
+license = "MIT"
+repository = "https://github.com/iamseol/txtweb"
+documentation = "https://docs.rs/txtweb/latest/txtweb"
+homepage = "https://github.com/iamseol/txtweb"
+keywords = ["cli", "txt", "web"]
+categories = ["command-line-utilities", "web-programming"]
+readme = "README.md"
+
+[dependencies]
+txtlib = "0.1.3"
