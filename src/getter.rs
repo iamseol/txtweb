@@ -70,12 +70,12 @@ pub fn get_pages(
             str_page_components
                 .split("\n\n@")
                 .for_each(|current_page_component| {
-                    page_components.push(
+                    page_components.push({
                         current_page_component
                             .split_once("\n")
                             .map(|(a, b)| (a.to_string(), b.to_string()))
-                            .unwrap(),
-                    );
+                            .unwrap_or((current_page_component.to_string(), String::new()))
+                    });
                 });
 
             (content, page_components)
