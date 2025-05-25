@@ -84,8 +84,7 @@ pub fn get_pages(
         };
 
     let mut result = String::new();
-    let _ =
-        parse_page(&mut result, from, content, components, &page_components).map_err(|e| e.fire());
+    let _ = parse_page(&mut result, content, components, &page_components).map_err(|e| e.fire());
 
     write_new_file(&to.join("index.html"), &result)?;
 

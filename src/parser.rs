@@ -1,9 +1,7 @@
-use std::path::PathBuf;
 use txtlib::*;
 
 pub fn parse_page(
     buf: &mut String,
-    from: &PathBuf,
     content: &str,
     components: &Vec<(String, String)>,
     page_components: &Vec<(String, String)>,
@@ -15,25 +13,11 @@ pub fn parse_page(
     for current_word in content.split_whitespace() {
         match current_word {
             ">" => {
-                let tag = parse_tag(
-                    buf,
-                    from,
-                    &mut temp_storage,
-                    components,
-                    page_components,
-                    ">",
-                )?;
+                let tag = parse_tag(buf, &mut temp_storage, components, page_components, ">")?;
                 tag_stack.push(tag);
             }
             "\\" => {
-                parse_tag(
-                    buf,
-                    from,
-                    &mut temp_storage,
-                    components,
-                    page_components,
-                    " />",
-                )?;
+                parse_tag(buf, &mut temp_storage, components, page_components, " />")?;
             }
             "<" => {
                 let last_tag = tag_stack
@@ -65,7 +49,6 @@ pub fn parse_page(
 
 pub fn parse_tag(
     buf: &mut String,
-    from: &PathBuf,
     temp_storage: &mut Vec<String>,
     components: &Vec<(String, String)>,
     page_components: &Vec<(String, String)>,
@@ -106,7 +89,15 @@ pub fn parse_tag(
                             "the page component {page_component_name} is not found."
                         )))?;
 
-                    final_value = final_value.replace(&parameter_name, &found_page_component.1);
+                    let mut content = String::new();
+                    parse_page(
+                        &mut content,
+                        &found_page_component.1,
+                        components,
+                        page_components,
+                    )?;
+
+                    final_value = final_value.replace(&parameter_name, &content);
                 } else {
                     final_value = final_value.replace(&parameter_name, value.trim())
                 }
@@ -123,7 +114,7 @@ pub fn parse_tag(
             value.push_str(&current_word);
         }
 
-        parse_page(buf, from, &final_value, components, page_components)?;
+        parse_page(buf, &final_value, components, page_components)?;
     } else {
         buf.push('<');
         buf.push_str(&tag);
