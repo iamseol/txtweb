@@ -1,7 +1,7 @@
 [package]
 name = "txtweb"
 description = "text file-based webpage generating tool"
-version = "0.2.3"
+version = "0.1.7"
 edition = "2024"
 authors = ["Seol SO <hi@iamseol.com>"]
 license = "MIT"

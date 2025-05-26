@@ -46,47 +46,19 @@ pub fn get_pages(
 ) -> EmptyTxtResult {
     for current_entry in get_entries(from)? {
         let current_path = current_entry.path();
+        let current_entry_name = get_whole_file_name(&current_path)?;
+        let start = &from.join(current_entry_name);
 
-        if current_path.is_file() {
+        if current_path.is_dir() {
+            let des = &to.join(current_entry_name);
+            create_new_folder(des)?;
+            get_pages(start, des, components)?;
+
             continue;
         }
 
-        let current_entry_name = get_whole_file_name(&current_path)?;
-        let des = to.join(current_entry_name);
-
-        create_new_folder(&des)?;
-        get_pages(&from.join(current_entry_name), &des, components)?;
-
-        continue;
+        parse_page(start, &to, current_entry_name, components)?;
     }
-
-    let mut file_content = String::new();
-    read_file(&mut file_content, &from.join("index.txt"))?;
-
-    let (content, page_components): (&str, Vec<(String, String)>) =
-        if let Some((content, str_page_components)) = file_content.split_once("\n\n@") {
-            let mut page_components: Vec<(String, String)> = Vec::new();
-
-            str_page_components
-                .split("\n\n@")
-                .for_each(|current_page_component| {
-                    page_components.push({
-                        current_page_component
-                            .split_once("\n")
-                            .map(|(a, b)| (a.to_string(), b.to_string()))
-                            .unwrap_or((current_page_component.to_string(), String::new()))
-                    });
-                });
-
-            (content, page_components)
-        } else {
-            (&file_content, Vec::new())
-        };
-
-    let mut result = String::new();
-    let _ = parse_page(&mut result, content, components, &page_components).map_err(|e| e.fire());
-
-    write_new_file(&to.join("index.html"), &result)?;
 
     Ok(())
 }
