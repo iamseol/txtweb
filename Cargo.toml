@@ -1,7 +1,7 @@
 [package]
 name = "txtweb"
 description = "text file-based webpage generating tool"
-version = "0.1.7"
+version = "0.1.8"
 edition = "2024"
 authors = ["Seol SO <hi@iamseol.com>"]
 license = "MIT"
@@ -13,4 +13,4 @@ categories = ["command-line-utilities", "web-programming"]
 readme = "README.md"
 
 [dependencies]
-txtlib = "0.1.3"
+txtlib = "0.1.4"

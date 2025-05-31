@@ -14,6 +14,8 @@ This directory is for the components that you can use throughout your main pages
 
 You can store `.css`, `.js` source code, images, videos, or any files here to access from `/public/**`.
 
+TODO: add `recommened using `/public/css`for css and `/public/js` for using js.
+
 ## /dist
 
 This is the directory that this tool puts its final result in. You can upload this directory to deploy your project to Cloudflare, Vercel, or anywhere.

@@ -7,12 +7,13 @@ pub fn parse_page(
     to: &PathBuf,
     name: &str,
     components: &Vec<(String, String)>,
+    public: &Vec<(String, String)>,
 ) -> EmptyTxtResult {
     let mut file_content = String::new();
     read_file(&mut file_content, &from)?;
 
     let mut buf = String::new();
-    parse_page_content(&mut buf, &file_content, components)?;
+    parse_page_content(&mut buf, &file_content, components, public)?;
 
     write_new_file(&to.join(name).with_extension("html"), &buf)?;
 
@@ -23,6 +24,7 @@ fn parse_page_content(
     buf: &mut String,
     content: &str,
     components: &Vec<(String, String)>,
+    public: &Vec<(String, String)>,
 ) -> EmptyTxtResult {
     let (content, page_components): (&str, Vec<(String, String)>) =
         if let Some((content, str_page_components)) = content.split_once("\n\n@") {
@@ -50,11 +52,25 @@ fn parse_page_content(
     for current_word in content.split_whitespace() {
         match current_word {
             ">" => {
-                let tag = parse_tag(buf, &mut temp_storage, components, &page_components, ">")?;
+                let tag = parse_tag(
+                    buf,
+                    &mut temp_storage,
+                    components,
+                    &page_components,
+                    public,
+                    ">",
+                )?;
                 tag_stack.push(tag);
             }
             "\\" => {
-                parse_tag(buf, &mut temp_storage, components, &page_components, " />")?;
+                parse_tag(
+                    buf,
+                    &mut temp_storage,
+                    components,
+                    &page_components,
+                    public,
+                    " />",
+                )?;
             }
             "<" => {
                 let last_tag = tag_stack
@@ -89,12 +105,15 @@ fn parse_tag(
     temp_storage: &mut Vec<String>,
     components: &Vec<(String, String)>,
     page_components: &Vec<(String, String)>,
+    public: &Vec<(String, String)>,
     close_with: &str,
 ) -> TxtResult<String> {
     let tag = &temp_storage.remove(0);
 
     if tag.starts_with('_') {
-        parse_component(buf, temp_storage, tag, components, page_components)?;
+        parse_component(buf, tag, temp_storage, components, page_components, public)?;
+    } else if tag.starts_with('!') {
+        parse_embedded(buf, temp_storage, public)?;
     } else {
         parse_normal_tag(buf, tag, temp_storage, close_with);
     }
@@ -104,10 +123,11 @@ fn parse_tag(
 
 fn parse_component(
     buf: &mut String,
-    temp_storage: &mut Vec<String>,
     tag: &str,
+    temp_storage: &mut Vec<String>,
     components: &Vec<(String, String)>,
     page_components: &Vec<(String, String)>,
+    public: &Vec<(String, String)>,
 ) -> EmptyTxtResult {
     let current_component = &components
         .iter()
@@ -142,7 +162,7 @@ fn parse_component(
                     )))?;
 
                 let mut content = String::new();
-                parse_page_content(&mut content, &found_page_component.1, components)?;
+                parse_page_content(&mut content, &found_page_component.1, components, public)?;
 
                 final_value = final_value.replace(&parameter_name, &content);
             } else {
@@ -161,7 +181,27 @@ fn parse_component(
         value.push_str(&current_word);
     }
 
-    parse_page_content(buf, &final_value, components)?;
+    parse_page_content(buf, &final_value, components, public)?;
+    temp_storage.clear();
+
+    Ok(())
+}
+
+fn parse_embedded(
+    buf: &mut String,
+    temp_storage: &mut Vec<String>,
+    public: &Vec<(String, String)>,
+) -> EmptyTxtResult {
+    let url = temp_storage.get(0).ok_or(TxtError::Custom(String::from(
+        "!embed should have one single parameter for the url to the file.",
+    )))?;
+
+    let content = public
+        .iter()
+        .find(|c| *url == c.0)
+        .ok_or(TxtError::Custom(format!("the url `{url}` is not found.")))?;
+
+    buf.push_str(&content.1);
     temp_storage.clear();
 
     Ok(())
@@ -203,6 +243,6 @@ fn parse_normal_tag(buf: &mut String, tag: &str, temp_storage: &mut Vec<String>,
         buf.push('\"');
     }
 
-    temp_storage.clear();
     buf.push_str(close_with);
+    temp_storage.clear();
 }

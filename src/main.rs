@@ -1,6 +1,6 @@
 use std::{io::Write, path::PathBuf};
 use txtlib::*;
-use txtweb::{get_components, get_pages};
+use txtweb::{get_components, get_pages, get_public};
 
 fn main() {
     let mut txtweb = TxtLib::new(
@@ -50,12 +50,19 @@ fn new() -> EmptyTxtResult {
 
 fn build() -> EmptyTxtResult {
     let root_dir: PathBuf = get_cwd()?;
+    let mut public: Vec<(String, String)> = Vec::new();
     let mut components: Vec<(String, String)> = Vec::new();
 
     create_clean_folder(&root_dir.join("dist"))?;
     copy_all_folder(&root_dir.join("public"), &root_dir.join("dist/public"))?;
+    get_public(&root_dir.join("public"), "/public".to_string(), &mut public)?;
     get_components(&root_dir.join("components"), String::new(), &mut components)?;
-    get_pages(&root_dir.join("pages"), &root_dir.join("dist"), &components)?;
+    get_pages(
+        &root_dir.join("pages"),
+        &root_dir.join("dist"),
+        &components,
+        &public,
+    )?;
 
     Ok(())
 }
