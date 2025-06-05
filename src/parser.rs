@@ -26,30 +26,37 @@ fn parse_page_content(
     components: &Vec<(String, String)>,
     public: &Vec<(String, String)>,
 ) -> EmptyTxtResult {
-    let (content, page_components): (&str, Vec<(String, String)>) =
-        if let Some((content, str_page_components)) = content.split_once("\n\n@") {
-            let mut page_components: Vec<(String, String)> = Vec::new();
+    let mut main_content: String = String::new();
+    let mut page_components: Vec<(String, String)> = Vec::new();
 
-            str_page_components
-                .split("\n\n@")
-                .for_each(|current_page_component| {
-                    page_components.push({
-                        current_page_component
-                            .split_once("\n")
-                            .map(|(a, b)| (a.to_string(), b.to_string()))
-                            .unwrap_or((current_page_component.to_string(), String::new()))
-                    });
-                });
+    let mut is_main_content: Option<usize> = None;
 
-            (content, page_components)
+    for current_line in content
+        .lines()
+        .filter(|c| !c.is_empty() && !c.starts_with("//"))
+        .map(|c| c.split_once("// ").map(|c| c.0).unwrap_or(c))
+    {
+        if current_line.starts_with('@') {
+            is_main_content = Some(page_components.len());
+            page_components.push((current_line.to_string(), String::new()));
+            continue;
+        }
+
+        if let Some(current_idx) = is_main_content {
+            let current_page_component_content = &mut page_components[current_idx].1;
+
+            current_page_component_content.push(' ');
+            current_page_component_content.push_str(current_line.trim());
         } else {
-            (&content, Vec::new())
-        };
+            main_content.push(' ');
+            main_content.push_str(current_line.trim());
+        }
+    }
 
     let mut tag_stack: Vec<String> = Vec::new();
     let mut temp_storage: Vec<String> = Vec::new();
 
-    for current_word in content.split_whitespace() {
+    for current_word in main_content.split_whitespace() {
         match current_word {
             ">" => {
                 let tag = parse_tag(
@@ -152,13 +159,12 @@ fn parse_component(
 
         if current_word == "|" {
             if value.trim().starts_with('@') {
-                let page_component_name = value.trim().strip_prefix('@').unwrap();
-
                 let found_page_component = page_components
                     .iter()
-                    .find(|c| c.0 == page_component_name)
+                    .find(|c| c.0 == value.trim())
                     .ok_or(TxtError::Custom(format!(
-                        "the page component {page_component_name} is not found."
+                        "the page component {} is not found.",
+                        value.trim()
                     )))?;
 
                 let mut content = String::new();

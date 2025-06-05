@@ -10,7 +10,7 @@ checksum = "a4cdef7a2a6ebcc90d88319a44ecf3483e205f4cc1740faf27d3890b08d3bf6f"
 
 [[package]]
 name = "txtweb"
-version = "0.1.8"
+version = "0.1.9"
 dependencies = [
  "txtlib",
 ]

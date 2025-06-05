@@ -56,10 +56,7 @@ pub fn get_components(
 
         let mut content = String::new();
         read_file(&mut content, &current_path)?;
-        components.push((
-            original_name.clone() + current_entry_name,
-            content.split_whitespace().collect::<Vec<_>>().join(" "),
-        ));
+        components.push((original_name.clone() + current_entry_name, content));
     }
 
     Ok(())
